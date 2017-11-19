@@ -74,3 +74,31 @@ export default class App extends Component<{}> {
   }
 }
 ```
+
+
+&nbsp;
+## 02 Firebase setup
+
+* Install firebase.
+```
+$ npm install --save firebase
+```
+
+* Create a new project in https://console.firebase.google.com/. In develop, authentication, configure sign-in method by enabling the e-mail/password option. Copy the initialization code from the modal that pops up by clicking on the *web setup* link and paste it inside the componentWillMount lifecycle method definition inside App.js, after importing the firebase library.
+
+```
+```
+
+```
+componentWillMount() {
+  var config = {      
+    apiKey: "AIzaSyDI9FS-W9_OKt0Nqc-8PE1uD_TMDstXB4Y",
+    authDomain: "manager-589b0.firebaseapp.com",
+    databaseURL: "https://manager-589b0.firebaseio.com",
+    projectId: "manager-589b0",
+    storageBucket: "manager-589b0.appspot.com",
+    messagingSenderId: "839655804457"
+  };
+  firebase.initializeApp(config);
+}
+```
