@@ -265,3 +265,78 @@ const mapStateToProps = state => {
   />
 </CardSection>
 ```
+
+
+
+&nbsp;
+## 05 Handle password change
+
+* In ./src/actions/types.js.
+
+```
+export const PASSWORD_CHANGED = 'password_changed';
+```
+
+* In ./src/actions/index.js
+
+```
+import { PASSWORD_CHANGED } from'./types';
+
+export const passwordChanged = (text) => {
+  return {
+    type: PASSWORD_CHANGED,
+    payload: text
+  };
+}
+```
+
+* In .src/reducers/AuthReducer.js
+
+```
+import {
+  EMAIL_CHANGED,
+  PASSWORD_CHANGED
+ } from'../actions/types';
+
+const INITIAL_STATE = {
+  email: '',
+  password: ''
+ };
+```
+```
+case PASSWORD_CHANGED:
+  return { ...state, password: action.payload };
+```
+
+
+* In LoginForm.js, add and implement the event handler for the password input form change events.
+
+```
+import { emailChanged, passwordChanged } from '../actions';
+```
+```
+onPasswordChange(text) {
+  this.props.passwordChanged(text);
+}
+```
+```
+CardSection>
+  <Input
+    secureTextEntry
+    label="Password"
+    placeholder="password"
+    onChangeText={this.onPasswordChange.bind(this)}
+    value={this.props.password}
+  />
+</CardSection>
+```
+```
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password
+  };
+};
+
+export default connect(mapStateToProps, {emailChanged, passwordChanged})(LoginForm);
+```
