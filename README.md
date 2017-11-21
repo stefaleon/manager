@@ -102,3 +102,63 @@ componentWillMount() {
   firebase.initializeApp(config);
 }
 ```
+
+&nbsp;
+## 03 Login form
+
+* Get a copy of the common components in the src/components folder.
+
+* Create LoginForm.js in the components folder. It returns a Card component. It contains three CardSections. The firsttwo are the inputs for the login and password and the third one is the button.
+
+*./src/components/LoginForm.js*
+```
+import React, { Component } from 'react';
+import { Card, CardSection, Input, Button } from './common';
+
+class LoginForm extends Component {
+  render() {
+    return (
+      <Card>
+
+        <CardSection>
+          <Input
+            label="Email"
+            placeholder="yourmail@example.com"
+          />
+        </CardSection>
+
+        <CardSection>
+          <Input
+            secureTextEntry
+            label="Password"
+            placeholder="password"
+          />
+        </CardSection>
+
+        <CardSection>
+          <Button>
+            Login
+          </Button>
+        </CardSection>
+
+      </Card>
+    );
+  }
+}
+
+export default LoginForm;
+```
+
+* Import LoginForm in App and render it.
+
+```
+import LoginForm from './components/LoginForm';
+```
+```
+  render() {
+    return (
+      <Provider store={createStore(reducers)} >
+        <LoginForm />        
+      </Provider>
+    );
+  }

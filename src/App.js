@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducers from './reducers';
 import firebase from 'firebase';
+import LoginForm from './components/LoginForm';
 
 export default class App extends Component<{}> {
   componentWillMount() {
@@ -22,11 +23,7 @@ export default class App extends Component<{}> {
   render() {
     return (
       <Provider store={createStore(reducers)} >
-        <View>
-          <Text>
-            React Native with Redux app basic boilerplate
-          </Text>
-        </View>
+        <LoginForm />        
       </Provider>
     );
   }
