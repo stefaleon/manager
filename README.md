@@ -108,7 +108,7 @@ componentWillMount() {
 
 * Get a copy of the common components in the src/components folder.
 
-* Create LoginForm.js in the components folder. It returns a Card component. It contains three CardSections. The firsttwo are the inputs for the login and password and the third one is the button.
+* Create LoginForm.js in the components folder. It returns a Card component. It contains three CardSections. The first two contain the inputs for the login and password and the third one contains the login button.
 
 *./src/components/LoginForm.js*
 ```
@@ -162,3 +162,106 @@ import LoginForm from './components/LoginForm';
       </Provider>
     );
   }
+```
+
+
+&nbsp;
+## 04 Handle email change
+
+* Inside src, add the actions folder. Create types.js to hold the actions' type strings in order to help with avoiding typos. Then create index.js and implement the action creator for the email change.
+
+*./src/actions/types.js*
+```
+export const EMAIL_CHANGED = 'email_changed';
+```
+
+
+*./src/actions/index.js*
+```
+import { EMAIL_CHANGED } from'./types';
+
+export const emailChanged = (text) => {
+  return {
+    type: EMAIL_CHANGED,
+    payload: text
+  };
+}
+```
+
+* In LoginForm.js, add and implement the event handler for the email input form change events. The emailChanged event handler will call the action creator with the 'email_changed' type. First import the connect helper from react-redux and wire the export up with it.
+
+```
+import { connect } from 'react-redux';
+import { emailChanged } from '../actions';
+```
+```
+class LoginForm extends Component {
+  onEmailChange(text) {
+    this.props.emailChanged(text);
+  }
+```
+```
+    <CardSection>
+      <Input
+        label="Email"
+        placeholder="yourmail@example.com"
+        onChangeText={this.onEmailChange.bind(this)}
+      />
+    </CardSection>
+```
+```
+export default connect(mapStateToProps, {emailChanged})(LoginForm);
+```
+
+* Inside the reducers folder, add AuthReducer.js. It will contain an initial state of an empty string for email and the case for responding to the email changed action by producing state appropriately.
+
+*.src/reducers/AuthReducer.js*
+```
+import { EMAIL_CHANGED } from'../actions/types';
+
+const INITIAL_STATE = { email: '' };
+
+export default (state =  INITIAL_STATE, action) => {
+  switch (action.type) {
+    case EMAIL_CHANGED:
+      return { ...state, email: action.payload };
+    default:
+      return state;
+  }
+};
+```
+
+
+* In combineReducers, declare that the auth piece of state is produced by the AuthReducer.
+
+*./src/reducers/index.js*
+```
+import { combineReducers } from 'redux';
+import Authreducer from '.AuthReducer';
+
+export default combineReducers({
+  auth: AuthReducer
+});
+```
+
+* In LoginForm.js, the mapStateToProps function can now be defined. It will be called with the global application state and return the email props which will take value of the auth.email, since auth is the key we assigned the AuthReducer value to in combineReducers and email is the key that pairs the piece of state produced by AuthReducer.
+
+```
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email
+  };
+};
+```
+
+* The value in the email input is now the props email.
+```
+<CardSection>
+  <Input
+    label="Email"
+    placeholder="yourmail@example.com"
+    onChangeText={this.onEmailChange.bind(this)}
+    value={this.props.email}
+  />
+</CardSection>
+```
