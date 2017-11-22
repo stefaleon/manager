@@ -582,3 +582,92 @@ const styles = {
   }
 };
 ```
+
+
+
+&nbsp;
+## 10 Show a spinner
+
+* In ./src/actions/types.js export a constant for user login.
+
+```
+export const LOGIN_USER = 'login_user';
+```
+
+
+* In ./src/actions/index.js, dispatch the action with a type of LOGIN_USER before the firebase authentication for signing in begins.
+
+```
+import { LOGIN_USER } from'./types';
+```
+```
+export const loginUser =  ( { email, password } ) => {
+  return (dispatch) => {
+    dispatch({ type: LOGIN_USER });    
+    firebase.auth().signInWithEmailAndPassword(email, password)
+```
+
+
+* Update AuthReducer for LOGIN_USER. Introduce the loading piece of state and set it to true in the case of LOGIN_USER. Clear the error in the case of LOGIN_USER. Set loading to false on other cases. Also clear the email and password on successful login.
+
+```
+import { LOGIN_USER } from'../actions/types';
+```
+```
+const INITIAL_STATE = {
+  email: '',
+  password: '',
+  user: null,
+  error: '',
+  loading: false
+ };
+```
+```
+case LOGIN_USER:
+  return { ...state, loading: true, error: '' };
+case LOGIN_USER_SUCCESS:
+  return { ...state, user: action.payload, loading: false, error: '', email: '', password: '' };
+case LOGIN_USER_FAIL:
+  return { ...state, error: 'Authentication Failed.', loading: false, password: '' };
+```
+
+
+* In LoginForm.js, map the loading state to props.
+
+```
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password,
+    error: state.auth.error,
+    loading: state.auth.loading
+  };
+};
+```
+
+* Import Spinner.
+
+```
+import { Spinner } from './common';
+```
+
+* Define the renderButtonOrSpinner helper method and replace the Button code with it.
+
+```
+renderButtonOrSpinner() {
+  if (this.props.loading) {
+    return <Spinner size="large" />;
+  }
+  return (
+    <Button onPress={this.onButtonPress.bind(this)}>
+      Login
+    </Button>
+  );
+}
+```
+
+```
+<CardSection>
+  { this.renderButtonOrSpinner() }
+</CardSection>
+```
