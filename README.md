@@ -446,3 +446,45 @@ const INITIAL_STATE = {
 case LOGIN_USER_SUCCESS:
   return { ...state, user: action.payload };
 ```
+
+
+&nbsp;
+## 08 Create new user
+
+* Add a catch to loginUser, so that on authentication failure an attempt to create a new user will be made.
+```
+export const loginUser =  ( { email, password } ) => {
+  return (dispatch) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(user => {
+        dispatch({ type: LOGIN_USER_SUCCESS, payload: user });
+      })
+      .catch(() => {
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then(user => {
+            dispatch({ type: LOGIN_USER_SUCCESS, payload: user });
+      });
+  };
+}
+```
+
+
+* Since we come to the same result in both cases of sign-in or create-user, we can refactor by creating the loginUserSuccess helper.
+
+```
+const loginUserSuccess = (dispatch, user) =>  {
+  dispatch({ type: LOGIN_USER_SUCCESS, payload: user });
+};
+```
+```
+export const loginUser =  ( { email, password } ) => {
+  return (dispatch) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(user => loginUserSuccess(dispatch, user))
+      .catch(() => {
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then(user => loginUserSuccess(dispatch, user));
+      });
+  };
+}
+```
