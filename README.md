@@ -4,9 +4,8 @@
 by [Stephen Grider](https://github.com/stephengrider)
 
 
-## Dev Tools
-### Node, NPM, Yarn, Atom, Genymotion
-### react-native, redux, react-redux
+### react-native, redux, react-redux, firebase, redux-thunk
+
 
 &nbsp;
 ## 00 Initialize the *manager* app
@@ -21,7 +20,6 @@ $ react native init manager
 
 ```
 $  npm install --save redux react-redux
-
 ```
 
 
@@ -340,3 +338,86 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {emailChanged, passwordChanged})(LoginForm);
 ```
+
+
+&nbsp;
+## 06 Async actions
+
+
+* Install redux-thunk. [Redux Thunk middleware allows you to write action creators that return a function instead of an action. The thunk can be used to delay the dispatch of an action, or to dispatch only if a certain condition is met. The inner function receives the store methods *dispatch* and *getState* as parameters](https://github.com/gaearon/redux-thunk).
+
+```
+$ npm install --save redux-thunk
+```
+
+
+* In App.js, apply the redux-thunk middleware to the store creation definition.
+
+```
+import { applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
+```
+```
+render() {
+  const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+
+  return (
+    <Provider store={store} >
+      <LoginForm />
+    </Provider>
+  );
+}
+```
+
+
+* In ./src/actions/types.js.
+
+```
+export const LOGIN_USER_SUCCESS = 'login_user_success';
+```
+
+
+* In ./src/actions/index.js add an export for the loginUser action creator. This is called with a parameter object containing the email and password data. This action will attempt to sign in the user to firebase.
+
+**With *redux-thunk* installed, *action creators* can not only return *actions* (objects with a *type* property), but they can also return functions that can be called with *dispatch*. This way async actions can be performed.**
+
+```
+import { LOGIN_USER_SUCCESS } from'./types';
+import firebase from 'firebase';
+```
+```
+export const loginUser =  ( { email, password } ) => {
+  return (dispatch) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(user => {
+        dispatch({ type: LOGIN_USER_SUCCESS, payload: user });
+      });
+  };
+}
+```
+
+Now the action is dispatched after the callback has received a response (.then runs after the request is completed). We are manually dispatching when we are ready.
+
+* In LoginForm.js, import and connect the loginUser action creator.
+
+```
+import { emailChanged, passwordChanged, loginUser } from '../actions';
+```
+```
+export default connect(mapStateToProps, {
+  emailChanged, passwordChanged, loginUser
+})(LoginForm);
+```
+
+* Create the onButtonPress event handler and call it with the button onPress event.
+
+```
+onButtonPress() {
+  const { email, password } = this.props;
+  this.props.loginUser({ email, password });
+}
+```
+```
+<Button onPress={this.onButtonPress.bind(this)}>
+```
+Now, when the login button is touched, an attempt for user login is performed and the successful login is being handled with an appropriate action being dispatched.
