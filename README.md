@@ -488,3 +488,97 @@ export const loginUser =  ( { email, password } ) => {
   };
 }
 ```
+
+
+&nbsp;
+## 09 Handle login fail
+
+
+* In ./src/actions/types.js export a constant for login fail.
+
+```
+export const LOGIN_USER_FAIL = 'login_user_fail';
+```
+
+* In ./src/actions/index.js, configure the loginUserFail helper which dispatches an action with a type of LOGIN_USER_FAIL.
+
+```
+import { LOGIN_USER_FAIL } from'./types';
+```
+```
+const loginUserFail = (dispatch) => {
+  dispatch({ type: LOGIN_USER_FAIL });
+};
+```
+
+* Handle the case with another catch.
+
+```
+export const loginUser =  ( { email, password } ) => {
+  return (dispatch) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(user => loginUserSuccess(dispatch, user))
+      .catch(() => {
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then(user => loginUserSuccess(dispatch, user))
+           .catch(() => loginUserFail(dispatch));
+      });
+  };
+}
+```
+
+* Update AuthReducer for LOGIN_USER_FAIL. Initialize the error piece of state.
+
+```
+import { LOGIN_USER_FAIL } from'../actions/types';
+```
+```
+const INITIAL_STATE = {
+  email: '',
+  password: '',
+  user: null,
+  error: ''
+ };
+```
+
+* On failure show an error message and clear the password. Add the clearing of the error message in the case of successful login.
+
+```
+case LOGIN_USER_SUCCESS:
+  return { ...state, user: action.payload, error: '' };
+case LOGIN_USER_FAIL:
+  return { ...state, error: 'Authentication Failed.', password: '' };
+```
+
+
+* In LoginForm.js, map the error state to props.
+
+```
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password,
+    error: state.auth.error
+  };
+};
+```
+
+* And display the styled error message above the button.
+
+```
+import { Text } from 'react-native';
+```
+```
+<Text style={styles.errorTextStyle}>
+  {this.props.error}
+</Text>
+```
+```
+const styles = {
+  errorTextStyle: {
+    fontSize: 20,
+    alignSelf: 'center',
+    color: 'red'
+  }
+};
+```
