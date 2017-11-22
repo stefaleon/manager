@@ -421,3 +421,28 @@ onButtonPress() {
 <Button onPress={this.onButtonPress.bind(this)}>
 ```
 Now, when the login button is touched, an attempt for user login is performed and the successful login is being handled with an appropriate action being dispatched.
+
+
+
+&nbsp;
+## 07 Update AuthReducer for LOGIN_USER_SUCCESS
+
+* Edit AuthReducer in order to include the LOGIN_USER_SUCCESS action.
+
+```
+import {
+  EMAIL_CHANGED,
+  PASSWORD_CHANGED,
+  LOGIN_USER_SUCCESS
+ } from'../actions/types';
+
+const INITIAL_STATE = {
+   email: '',
+   password: '',
+   user: null
+  };  
+```
+```
+case LOGIN_USER_SUCCESS:
+  return { ...state, user: action.payload };
+```
