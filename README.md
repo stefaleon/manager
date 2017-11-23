@@ -785,3 +785,67 @@ const loginUserSuccess = (dispatch, user) =>  {
 ```
 
 Now the EmployeeList component is displayed on login success.
+
+
+
+
+&nbsp;
+## 13 EmployeeCreate
+
+* In src/components, add EmployeeCreate.js.
+
+```
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+
+class EmployeeCreate extends Component {
+  render() {
+    return (
+      <View>
+        <Text>Employee Create Form</Text>
+      </View>
+    );
+  }
+}
+
+export default EmployeeCreate;
+```
+
+* Edit Router.js in order to access the employeeCreate scene. Use rightTitle and onRight from the react-native-router-flux API.
+
+```
+import EmployeeCreate from './components/EmployeeCreate';
+import { Actions } from 'react-native-router-flux';
+```
+```
+const RouterComponent = () => {
+  return (
+    <Router>
+      <Scene key="root">
+        <Scene
+          key="login"
+          component={LoginForm}
+          title="Please Login"
+          initial
+        />
+
+        <Scene
+          onRight={() => Actions.employeeCreate()}
+          rightTitle="Add"
+          key="employeeList"
+          component={EmployeeList}
+          title="Employees"
+        />
+
+        <Scene
+          key="employeeCreate"
+          component={EmployeeCreate}
+          title="Add Employee"
+        />
+      </Scene>
+    </Router>
+  );
+};
+
+export default RouterComponent;
+```
