@@ -671,3 +671,62 @@ renderButtonOrSpinner() {
   { this.renderButtonOrSpinner() }
 </CardSection>
 ```
+
+
+
+
+
+
+
+&nbsp;
+## 10 react-native-router-flux
+
+* Install the react-native-router-flux library.
+
+```
+$ npm install --save react-native-router-flux
+```
+
+* In src, create Router.js.
+
+*./src/Router.js*
+```
+import React from 'react';
+import { Scene, Router } from 'react-native-router-flux';
+import LoginForm from './components/LoginForm';
+
+import React from 'react';
+import { Scene, Router } from 'react-native-router-flux';
+import LoginForm from './components/LoginForm';
+
+const RouterComponent = () => {
+  return (
+    <Router>
+      <Scene
+        key="login"
+        component={LoginForm}
+        title="Please Login"
+        initial
+      />
+    </Router>
+  );
+};
+
+export default RouterComponent;
+```
+
+* In App.js
+
+```
+import Router from './Router';
+```
+
+and replace the LoginForm tag
+
+```
+return (
+  <Provider store={store} >
+    <Router />
+  </Provider>
+);
+```
