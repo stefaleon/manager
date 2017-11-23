@@ -679,7 +679,7 @@ renderButtonOrSpinner() {
 
 
 &nbsp;
-## 10 react-native-router-flux
+## 11 react-native-router-flux
 
 * Install the react-native-router-flux library.
 
@@ -730,3 +730,58 @@ return (
   </Provider>
 );
 ```
+
+
+&nbsp;
+## 12 EmployeeList
+
+* Add EmployeeList.js in src/components.
+
+```
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+
+class EmployeeList extends Component {
+  render() {
+    return (
+      <View>
+        <Text>Employee List</Text>
+        <Text>Employee List</Text>
+        <Text>Employee List</Text>
+        <Text>Employee List</Text>
+        <Text>Employee List</Text>
+        <Text>Employee List</Text>
+      </View>
+    );
+  }
+}
+
+export default EmployeeList;
+```
+
+* In Router.js add another scene for the employees' list.
+
+```
+import EmployeeList from './components/EmployeeList';
+```
+```
+        <Scene
+          key="employeeList"
+          component={EmployeeList}
+          title="Employees"          
+        />
+```
+
+* In src/actions/index.js, in the login user success action creator, call Actions with the employeeList key.
+
+```
+import { Actions } from 'react-native-router-flux';
+```
+```
+const loginUserSuccess = (dispatch, user) =>  {
+  dispatch({ type: LOGIN_USER_SUCCESS, payload: user });
+  Actions.employeeList();
+};
+```
+
+Now the EmployeeList component is displayed on login success.
